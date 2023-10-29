@@ -65,4 +65,4 @@ jobs:
     - name: Install and Run Security Scan
       run: |
         pip install git+https://github.com/PyCQA/bandit#egg=bandit
-        bandit -r *
+        ./pipeline-scripts/bandit.sh
