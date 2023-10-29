@@ -68,6 +68,8 @@ jobs:
         ./pipeline-scripts/bandit.sh
       continue-on-error: true
 
-    - name: Install and Run ZAP API Scan 
-      run: |
-        ./pipeline-scripts/zap.sh
+    - name: Run ZAP API Scan 
+      uses: zaproxy/action-api-scan@v0.5.0
+      with:
+        format: openapi
+        target: 'http://0.0.0.0:8080/'

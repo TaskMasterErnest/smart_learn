@@ -7,7 +7,7 @@ sudo apt update
 sudo apt install owasp-zap
 
 # Start ZAP service
-zap.sh -daemon -port 8090 -host 0.0.0.0 &
+/usr/share/owasp-zap/zap.sh -daemon -port 8090 -host 0.0.0.0 &
 # Wait for ZAP to start up
 sleep 10
 # Run ZAP API Scan against Django API
