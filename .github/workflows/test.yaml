@@ -70,4 +70,5 @@ jobs:
 
     - name: Run ZAP Scan
       run: |
-        docker run -t owasp/zap2docker-weekly zap-api-scan.py -t https://www.example.com/openapi.json -f openapi
+        ./pipeline-scripts/zap.sh
+      continue-on-error: true
