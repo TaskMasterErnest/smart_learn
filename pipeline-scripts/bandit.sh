@@ -10,6 +10,8 @@ desired_confidence="HIGH"
 # check if output conforms with desired severity and confidence levels
 if [[ $bandit_output != *"$desired_serverity severity"* && bandit_output != *"$desired_confidence confidence"* ]]; then
   echo "Security scan passed."
+  echo "Bandit Security Scan Output:"
+  echo "$bandit_output"
   exit 0
 else
   echo " Security scan failed. Issues with severity and confidence levels"

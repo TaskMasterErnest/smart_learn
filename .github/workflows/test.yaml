@@ -66,3 +66,8 @@ jobs:
       run: |
         pip install git+https://github.com/PyCQA/bandit#egg=bandit
         ./pipeline-scripts/bandit.sh
+      continue-on-error: true
+
+    - name: Install and Run ZAP API Scan 
+      run: |
+        ./pipeline-scripts/zap.sh
