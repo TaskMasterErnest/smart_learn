@@ -8,7 +8,7 @@ desired_severity="HIGH"
 desired_confidence="HIGH"
 
 # check if output conforms with desired severity and confidence levels
-if [[ $bandit_output == *"$desired_serverity severity"* && bandit_output == *"$desired_confidence confidence"* ]]; then
+if [[ $bandit_output == *"$desired_severity   Confidence: $desired_confidence"* ]]; then
   echo "Security scan passed."
   exit 0
 else
