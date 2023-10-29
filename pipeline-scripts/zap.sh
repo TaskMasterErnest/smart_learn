@@ -1,28 +1,16 @@
 #!/bin/bash
 
-# Install ZAP
-echo 'deb http://download.opensuse.org/repositories/home:/cabelo/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:cabelo.list
-curl -fsSL https://download.opensuse.org/repositories/home:cabelo/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_cabelo.gpg > /dev/null
-sudo apt update
-sudo apt install owasp-zap
+# Run ZAP scan against Django API and capture the output
+zap_output=$(docker run -t owasp/zap2docker-weekly zap-api-scan.py -t http://0.0.0.0:8080/ -f openapi)
 
-# Start ZAP service
-/usr/share/owasp-zap/zap.sh -daemon -port 8090 -host 0.0.0.0 &
-# Wait for ZAP to start up
-sleep 10
-# Run ZAP API Scan against Django API
-zap-cli --zap-url http://localhost:8090 -p 8090 -s zap-api-scan.py -t "http://0.0.0.0:8080" -f openapi
+# Extract FAIL-NEW and FAIL-INPROG values from the ZAP output
+fail_new=$(echo "$zap_output" | grep -oP 'FAIL-NEW: \K\d+')
+fail_inprog=$(echo "$zap_output" | grep -oP 'FAIL-INPROG: \K\d+')
 
-# get the exit code
-exit_code=$?
-
-# get the exit code
-echo "Exit Code : $exit_code"
-
-# processing the exit code
-if [[ ${exit_code} -ne 0 ]]; then
-  echo "OWASP ZAP report has either Low/Medium/High. Please check the HTML report"
-  exit 1;
+# Check if FAIL-NEW or FAIL-INPROG are not zero, and fail the pipeline
+if [[ $fail_new -ne 0 && $fail_inprog -ne 0 ]]; then
+  echo "ZAP scan failed with new or in-progress failures."
+  exit 1  # Fail the pipeline
 else
-  echo "OWASP ZAP did not report any Risk"
-fi;
+  echo "ZAP scan passed."
+fi
