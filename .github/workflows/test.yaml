@@ -44,15 +44,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+   
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    
+    # Run Unit Tests
     - name: Run Tests
       run: |
         python manage.py test
       continue-on-error: true # continue even if tests fail
+    
+    # Run Security Scan with Bandit
+    - name: Install and Run Security Scan
+      run: |
+        pip install git+https://github.com/PyCQA/bandit#egg=bandit
+        bandit -r *
